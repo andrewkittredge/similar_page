@@ -3,14 +3,14 @@ from BeautifulSoup import BeautifulSoup
 import re
 from preprocessing_utilities import cleanse
 
-def process_page(url):
+def process_url(url):
     page = urllib2.urlopen(url)
     page_soup = BeautifulSoup(page.read())
     page_text = visible_text(page_soup)
     page_text = cleanse(page_text)
-    links = page_soup.findAll('a')
-    
-    return page_text, links
+    urls = [anchor['href'].strip() for anchor in page_soup.findAll('a') if anchor.has_key('href')]
+   
+    return page_text, urls
 
 def visible_text(soup):
     #from http://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
@@ -30,7 +30,7 @@ def visible(element):
 import unittest
 class TestProcessPage(unittest.TestCase):
     def test_process_page(self):
-        text, links = process_page('http://patriotgetaways.com')
+        text, links = process_url('http://patriotgetaways.com')
         self.assert_(text)
         self.assert_(links)
         print text, links

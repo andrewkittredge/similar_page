@@ -12,20 +12,24 @@ def cleanse(_string):
 
     '''
     #Remove repetitions of whitespace
-    ret_string = string.translate(_string,
-                                    table=None,
-                                    deletions=string.punctuation)
+    #'a'.translate(None, 'a')
+    ret_string = _string.lower()
+    allowed_chars = re.compile(u'[^a-z0-9_ ]')
+    ret_string = allowed_chars.sub('', ret_string)
+    #ret_string = _string.translate(None, string.punctuation)
     
     multiple_white_space = '\s{2,}'
     ret_string = re.sub(multiple_white_space, ' ', ret_string)
-    ret_string = ret_string.to_lower()
+    #ret_string = ret_string.lower()
 
     return ret_string
+
+
 
 import unittest
 class PreprocessingTester(unittest.TestCase):
     def test_cleanse(self):
-        test_string = """a   $  b$$$ 
+        test_string = u"""a   $  b$$$ 
                                 c()d"""
         self.assertEqual('a b cd', cleanse(test_string))
 
