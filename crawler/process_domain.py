@@ -1,4 +1,4 @@
-from process_page import process_url
+from process_page import process_url, PageProcessingException
 from corpa import Corpa
 from urlparse import urlparse, urljoin
 import urllib2
@@ -17,11 +17,7 @@ def process_domain(domain, n_gram_builder):
         try:
             page_text, page_urls = process_url(url)
             logging.info('Opened %s' % url)
-        except urllib2.HTTPError:
-            logging.warning('HTTPError opening %s' % url)
-            continue
-        except urllib2.URLError:
-            logging.warning('URLError opening %s' % url)
+        except PageProcessingException:
             continue
         domain_links, neighboring_domains = filter_links(page_urls, domain)
         
@@ -34,7 +30,7 @@ def process_domain(domain, n_gram_builder):
 
 def sanitize_page_path(page_path):
     old_page_path = page_path
-    page_path = urllib.quote(page_path, safe='/')
+    page_path = urllib.quote(page_path, safe='/%')
     if page_path != old_page_path:
         logging.info('%s became %s' % (old_page_path, page_path))
     return page_path
@@ -47,9 +43,13 @@ def filter_links(urls, domain):
         if '@' in url:
             logging.info('%s looks like an email, skipping' % url)
             continue
+            
         o = urlparse(url)
         if not o.netloc or domain in o.netloc:
             page = sanitize_page_path(o.path)
+            if len(page) > 100:
+                logging.info('%s is very long, probably not a good url.' % page)
+                continue 
             domain_pages.add(page)
         else:
             neighboring_domains.append(o.netloc)
