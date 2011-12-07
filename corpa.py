@@ -30,7 +30,11 @@ class Corpa(object):
                 p_model = 10 ** self.lookup_service.GetJointProbability(phrase_string)
                 print phrase, p_corpa / p_model
                 indexes[phrase] = p_corpa / p_model
-        return indexes        
+        return indexes
+    
+    def __str__(self):
+        format_n_gram_count = lambda n_gram_count : '%s : %s' % (', '.join(map(str, n_gram_count[0])), n_gram_count[1])
+        return '\n'.join(map(format_n_gram_count, self.n_grams.most_common(50)))
         
 import unittest
 class TestCorpa(unittest.TestCase):
@@ -39,7 +43,8 @@ class TestCorpa(unittest.TestCase):
         corpa = Corpa()
         corpa.add_n_grams(n_grams)
         self.assertEquals(corpa.total_n_grams, 12)
-        indexes = corpa.variance_from_model()
+        #indexes = corpa.variance_from_model()
+        print corpa
         
     
 if __name__ == '__main__':

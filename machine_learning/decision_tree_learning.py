@@ -8,7 +8,7 @@ import math
 from collections import Counter
 import xml.etree.ElementTree as ET
 
-THRESHOLD = 0.1
+THRESHOLD = 0.0
 
 def decision_tree(data_set, attributes, parent_node):
     '''From Russel & Norvig pp 702
@@ -27,9 +27,12 @@ def decision_tree(data_set, attributes, parent_node):
         if impurity_reduction(best_attribute) < THRESHOLD:
             ET.SubElement(parent_node, 'leaf_node', {'class' : str(plurality_value(data_set))})
         else:
-            disjoint_subsets = data_set.subsets(best_attribute) 
-            for subset in disjoint_subsets:
-                decision_tree(subset, attributes - set([best_attribute]), parent_node)
+            node = ET.SubElement(parent_node, 'decision_node', {'attribute' : best_attribute})
+            
+            disjoint_subsets = data_set.attribute_value_subsets(best_attribute)
+            for attribute_value, subset in disjoint_subsets:
+                ET.SubElement(node, 'branch_node', {'attribute_value' : str(attribute_value)})
+                decision_tree(subset, attributes - set([best_attribute]), node)
                             
 def plurality_value(records):
     class_counter = Counter(record['class'] for record in records)
@@ -37,12 +40,35 @@ def plurality_value(records):
     
     
 import unittest
+from data_set import DataSet
 class Tester(unittest.TestCase):
     def setUp(self):
-        from data_set import build_test_records, DataSet
-        self.data_set = DataSet(build_test_records())
+        from data_set import build_liu_test_records
+        self.data_set = DataSet(build_liu_test_records())
+    
+    
     def test_decision_tree(self):
         data_set = self.data_set
         root_node = ET.Element('root')
-        tree = decision_tree(data_set, data_set.attributes, root_node)
+        decision_tree(data_set, data_set.attributes, root_node)
+        with open('loan_decision_tree.xml', 'wb') as out:
+            out.write(ET.tostring(root_node))
+            
+    def test_norvig_data(self):
+        from data_set import build_norvig_test_records
+        data_set = DataSet(build_norvig_test_records())
+        root_node = ET.Element('root')
+        decision_tree(data_set, data_set.attributes, root_node)
+        with open('norvig_decision_tree.xml', 'wb') as out:
+            out.write(ET.tostring(root_node))
+        
+        
+        
+    def test_dummy_tree(self):
+        dummy_data = [{'age' : 'y', 'class' : True},
+                      {'age' : 'o', 'class' : False}]
+        dummy_data_set = DataSet(dummy_data)
+        root_node = ET.Element('root')
+        decision_tree(dummy_data_set, dummy_data_set.attributes, root_node)
+        
         print ET.tostring(root_node)

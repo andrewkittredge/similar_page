@@ -6,11 +6,11 @@ import logging
 import urllib
 
 
-def process_domain(domain, n_gram_builder):
+def process_domain(domain, n_gram_builder=Corpa(order=3), desired_n_grams=10000):
     page_stack = ['']
     neighbors = set()
     crawled_pages = set()
-    while page_stack:
+    while page_stack and n_gram_builder.total_n_grams < desired_n_grams:
         page = page_stack.pop()
         crawled_pages.add(page)
         url = urljoin('http://' + domain, page)
@@ -26,7 +26,7 @@ def process_domain(domain, n_gram_builder):
         neighbors.update(neighboring_domains)
         n_gram_builder.consume_text(page_text)
 
-    return n_gram_builder.n_grams, neighbors
+    return n_gram_builder, neighbors
 
 def sanitize_page_path(page_path):
     old_page_path = page_path
@@ -69,6 +69,7 @@ class ProcessDomainTester(unittest.TestCase):
 if __name__ == '__main__':
     log = logging.getLogger()
     log.setLevel(logging.INFO)
-    corpa = Corpa()
-    process_domain('patriotgetaways.com', corpa)
+    
+    n_grams, neighbors = process_domain('patriotgetaways.com')
+    pass
     #unittest.main()
