@@ -31,13 +31,32 @@ def decision_tree(data_set, attributes, parent_node):
             
             disjoint_subsets = data_set.attribute_value_subsets(best_attribute)
             for attribute_value, subset in disjoint_subsets:
-                ET.SubElement(node, 'branch_node', {'attribute_value' : str(attribute_value)})
-                decision_tree(subset, attributes - set([best_attribute]), node)
+                branch_node = ET.SubElement(node, 'branch_node', {'attribute_value' : str(attribute_value)})
+                decision_tree(subset, attributes - set([best_attribute]), branch_node)
                             
 def plurality_value(records):
     class_counter = Counter(record['class'] for record in records)
     return class_counter.most_common(1)[0][0]
     
+    
+def matches_model(decision_tree, record):
+    '''Follow the tree downwards taking the branch that matches the record's attribute values.
+    
+    Need to handle missing attribute values.
+    
+    '''
+    node = decision_tree.getchildren[0]
+    while node.tag == 'decision_':
+        branches = node.findall('branch_node')
+        decision_attribute = node.attrib['attribute']
+        record_attribute_value = record[decision_attribute]
+        for branch in branches:
+            if branch.attrib['attribute_value'] == record_attribute_value:
+                branch_to_follow = branch
+                break
+
+        
+        
     
 import unittest
 from data_set import DataSet
@@ -53,6 +72,23 @@ class Tester(unittest.TestCase):
         decision_tree(data_set, data_set.attributes, root_node)
         with open('loan_decision_tree.xml', 'wb') as out:
             out.write(ET.tostring(root_node))
+        
+    def test_matches_model(self):
+
+        root_node = ET.Element('root')
+        model = decision_tree(self.data_set, self.data_set.attributes, root_node)
+        
+        no_applicant = {'age' : 'y',
+                     'has_job' : False,
+                     'own_house' : False,
+                     'f' : False}
+        self.assertFalse(root_node, matches_model(no_applicant))
+        
+        yes_applicant = {'age' : 'y',
+                         'has_job' : True,
+                         'own_house' : False,
+                         'credit_rating' : 'g'}
+        
             
     def test_norvig_data(self):
         from data_set import build_norvig_test_records
