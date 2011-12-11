@@ -65,7 +65,6 @@ def visible(element):
 class PageProcessingException(Exception):
     pass
 
-
 import unittest
 class TestProcessPage(unittest.TestCase):
     def test_process_page(self):

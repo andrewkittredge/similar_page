@@ -25,6 +25,17 @@ def cleanse(_string):
     return ret_string
 
 
+def prep_e_tree_for_parsing(_node):
+    node = _node.copy()
+    serialize_attribs(node)
+    for child_node in node.iter():
+        serialize_attribs(child_node)
+    return node
+        
+def serialize_attribs(node):
+    for attrib, attrib_value in node.attrib.iteritems():
+        node.attrib[attrib] = str(attrib_value)
+    
 
 import unittest
 class PreprocessingTester(unittest.TestCase):
@@ -32,6 +43,14 @@ class PreprocessingTester(unittest.TestCase):
         test_string = u"""a   $  b$$$ 
                                 c()d"""
         self.assertEqual('a b cd', cleanse(test_string))
-
+    
+    def test_prep_e_tree_for_processing(self):
+        from xml.etree import ElementTree as ET
+        root = ET.Element('root')
+        ET.SubElement(root, 'tag_name', {'bool' : True, 'int' : 1, 'list' : [True, None, 1]})
+        print_ready_node = prep_e_tree_for_parsing(root)
+        print ET.tostring(print_ready_node)
+        
+        
 if __name__ == '__main__':
     unittest.main()
