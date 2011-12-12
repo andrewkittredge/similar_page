@@ -1,6 +1,7 @@
-from MicrosoftNgram import LookupService
+from preprocessing_utilities import CachedLookUpService as LookupService
 from collections import Counter
 from n_gram import word_n_grams
+import logging
 
  
 class Corpa(object):
@@ -27,6 +28,7 @@ class Corpa(object):
             p_corpa = occurences  / total_phrases
             if any(phrase):
                 phrase_string = ' '.join(phrase)
+                logging.info('looking up probability of %s' % phrase_string)
                 p_model = 10 ** self.lookup_service.GetJointProbability(phrase_string)
                 indexes[phrase] = p_corpa / p_model
         return indexes

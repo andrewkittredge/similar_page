@@ -1,5 +1,10 @@
 import re
 import string
+from MicrosoftNgram import LookupService
+from shove import Shove
+import logging
+
+n_gram_probability_cache = Shove('file:///Users/andrewkittredge/Source/ai/similar_page/cached_n_gram_probability')
 
 def slurp(f):
     with open(f, 'r') as input:
@@ -35,9 +40,31 @@ def prep_e_tree_for_parsing(_node):
 def serialize_attribs(node):
     for attrib, attrib_value in node.attrib.iteritems():
         node.attrib[attrib] = str(attrib_value)
+        
+class CachedLookUpService(LookupService):
+    def GetJointProbability(self, phrase):
+        if phrase not in n_gram_probability_cache:
+            logging.info('probability cache miss on %s' % str(phrase))
+            probability =  LookupService.GetJointProbability(self, phrase)
+            n_gram_probability_cache[phrase] = probability
+        return n_gram_probability_cache[phrase]
     
 
 import unittest
+
+
+
+class TestCachedLookUpService(unittest.TestCase):
+    
+    def test_cached_lookup_service(self):
+        lookup_service = CachedLookUpService()
+        non_cached_lookup_service = LookupService()
+        lookup_service.GetJointProbability(('crapped'))
+        for case in ('word', 'word other', 'more words'):
+            self.assertEqual(lookup_service.GetJointProbability(case),
+                              non_cached_lookup_service.GetJointProbability(case))
+        
+        
 class PreprocessingTester(unittest.TestCase):
     def test_cleanse(self):
         test_string = u"""a   $  b$$$ 
@@ -51,6 +78,9 @@ class PreprocessingTester(unittest.TestCase):
         print_ready_node = prep_e_tree_for_parsing(root)
         print ET.tostring(print_ready_node)
         
+
         
 if __name__ == '__main__':
+    log = logging.getLogger()
+    log.setLevel(logging.INFO)
     unittest.main()
