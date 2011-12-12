@@ -13,8 +13,10 @@ def process_url(url):
     page_soup = BeautifulSoup(page)
     page_text = visible_text(page_soup)
     page_text = cleanse(page_text)
-    urls = [anchor['href'].strip() for anchor in page_soup.findAll('a') if anchor.has_key('href')]
-   
+    try:
+        urls = [anchor['href'].strip() for anchor in page_soup.findAll('a') if anchor.has_key('href')]
+    except Exception as e:
+        print e
     return page_text, urls
 
 page_failure_token = 'CouldNotOpenPage'

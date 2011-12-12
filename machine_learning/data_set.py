@@ -14,7 +14,7 @@ def information_gain(data_set, attribute):
     return data_set.entropy - data_set.partition(attribute).entropy
 
 class DataSet(object):
-    def __init__(self, records):
+    def __init__(self, records=[]):
         self.records = list(records)
         self.classes = Counter(record['class'] for record in records)
         
