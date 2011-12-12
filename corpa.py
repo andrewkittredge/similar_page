@@ -28,7 +28,6 @@ class Corpa(object):
             if any(phrase):
                 phrase_string = ' '.join(phrase)
                 p_model = 10 ** self.lookup_service.GetJointProbability(phrase_string)
-                print phrase, p_corpa / p_model
                 indexes[phrase] = p_corpa / p_model
         return indexes
     
