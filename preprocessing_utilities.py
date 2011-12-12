@@ -25,6 +25,9 @@ def cleanse(_string):
     
     multiple_white_space = '\s{2,}'
     ret_string = re.sub(multiple_white_space, ' ', ret_string)
+    
+    non_breaking_space = '\d*nbsp\d*'
+    ret_string = re.sub(non_breaking_space, ' ', ret_string)
     #ret_string = ret_string.lower()
 
     return ret_string
@@ -46,7 +49,10 @@ class CachedLookUpService(LookupService):
         if phrase not in n_gram_probability_cache:
             logging.info('probability cache miss on %s' % str(phrase))
             probability =  LookupService.GetJointProbability(self, phrase)
-            n_gram_probability_cache[phrase] = probability
+            try:
+                n_gram_probability_cache[phrase] = probability
+            except KeyError:
+                return 0.0
         return n_gram_probability_cache[phrase]
     
 

@@ -1,8 +1,9 @@
-def word_n_grams(string, order):
+def word_n_grams(string, order, max_word_len=40):
     '''Word level n grams from a string of words seperated by spaces.
 
     '''
     tokens = string.split(' ')
+    tokens = [token for token in tokens if len(token) <= max_word_len]
     #Sentry values
     tokens = [None,] + tokens + [None,]
     for i in range(len(tokens) - (order - 1)):
@@ -12,7 +13,7 @@ def word_n_grams(string, order):
 import unittest
 class TestNGramFunctions(unittest.TestCase):
     def test_word_n_grams(self):
-        string = 'the dog smelled like a skunk'
+        string = 'the dog smelled like a skunk averylongworddddddddddddddddddddddddddddddddddddddddddddddddddddd'
         expected_results = [(None, 'the', 'dog'),
                         ('the', 'dog', 'smelled'),
                         ('dog', 'smelled', 'like'),
