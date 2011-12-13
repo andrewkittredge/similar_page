@@ -54,12 +54,13 @@ class CachedLookUpService(LookupService):
             except KeyError:
                 return 0.0
         return n_gram_probability_cache[phrase]
-    
+
+def string_top_corpa_values(corpa, top=20):    
+    indicies = corpa.variance_from_model()
+    sorted_indicies = sorted(indicies.iteritems(), key=lambda k_v : k_v[1], reverse=True)[:top]
+    return '\n'.join(map(str, sorted_indicies))
 
 import unittest
-
-
-
 class TestCachedLookUpService(unittest.TestCase):
     
     def test_cached_lookup_service(self):
