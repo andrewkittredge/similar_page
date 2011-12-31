@@ -3,8 +3,9 @@ import string
 from MicrosoftNgram import LookupService
 from shove import Shove
 import logging
+import tempfile
 
-n_gram_probability_cache = Shove('file:///Users/andrewkittredge/Source/ai/similar_page/cached_n_gram_probability')
+n_gram_probability_cache = Shove('file:///%s' % tempfile.gettempdir())
 
 def slurp(f):
     with open(f, 'r') as input:

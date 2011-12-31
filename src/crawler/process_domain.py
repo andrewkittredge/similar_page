@@ -1,7 +1,6 @@
 from process_page import process_url, PageProcessingException
 from corpa import Corpa
 from urlparse import urlparse, urljoin
-import urllib2
 import logging
 import urllib
 

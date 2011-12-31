@@ -4,8 +4,9 @@ import re
 from preprocessing_utilities import cleanse
 from shove import Shove
 import logging
+import tempfile
 
-pages_cache = Shove('file:///Users/andrewkittredge/Source/ai/similar_page/cached_pages')
+pages_cache = Shove('file://%s' % tempfile.gettempdir())
 
 
 def process_url(url):
