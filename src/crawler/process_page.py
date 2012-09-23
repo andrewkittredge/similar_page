@@ -6,7 +6,7 @@ from shove import Shove
 import logging
 import tempfile
 
-pages_cache = Shove('file://%s' % tempfile.gettempdir())
+pages_cache = Shove('file:///tmp/shove_cache')
 
 
 def process_url(url):

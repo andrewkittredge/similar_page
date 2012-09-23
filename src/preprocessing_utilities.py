@@ -5,7 +5,7 @@ from shove import Shove
 import logging
 import tempfile
 
-n_gram_probability_cache = Shove('file:///%s' % tempfile.gettempdir())
+n_gram_probability_cache = Shove('file:///tmp/shove_cache')
 
 def slurp(f):
     with open(f, 'r') as input:
