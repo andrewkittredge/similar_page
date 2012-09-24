@@ -39,7 +39,7 @@ def process_seed_domains(self, seed_domains):
         records.append(domain_records)
     return records, set(neighboring_domains)
 
-def build_decision_tree_from_domains(domains):
+#def build_decision_tree_from_domains(domains):
     
 
 import unittest

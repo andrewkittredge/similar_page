@@ -1,5 +1,5 @@
 def word_n_grams(string, order, max_word_len=40):
-    '''Word level n grams from a string of words seperated by spaces.
+    '''Word level n grams from a string of words separated by spaces.
 
     '''
     tokens = string.split(' ')

@@ -1,7 +1,7 @@
 import urllib2
 from BeautifulSoup import BeautifulSoup
 import re
-from preprocessing_utilities import cleanse
+
 from shove import Shove
 import logging
 import tempfile
