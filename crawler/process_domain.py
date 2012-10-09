@@ -3,8 +3,7 @@ from process_page import process_url, PageProcessingException
 from urlparse import urlparse, urljoin
 import logging
 import urllib
-from src.ma
-
+from corpa import Corpa
 
 def process_domain(domain, n_gram_builder=Corpa(order=3), desired_n_grams=10000):
     page_stack = ['']

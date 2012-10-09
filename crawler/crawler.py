@@ -40,7 +40,6 @@ def process_seed_domains(self, seed_domains):
     return records, set(neighboring_domains)
 
 #def build_decision_tree_from_domains(domains):
-    
 
 import unittest
 class CrawlerTester(unittest.TestCase):

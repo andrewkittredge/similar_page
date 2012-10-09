@@ -5,6 +5,7 @@ import re
 from shove import Shove
 import logging
 import tempfile
+from preprocessing_utilities import cleanse
 
 pages_cache = Shove('file:///tmp/shove_cache')
 
